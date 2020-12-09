@@ -1,5 +1,5 @@
 {
-    "name": "ibnu/localdatabps",
+    "name": "Ibnu Al Baari/localdatabps",
     "description": "Simple line bot using php slim framework",
     "type": "project",
     "require": {

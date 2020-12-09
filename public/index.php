@@ -23,31 +23,31 @@ $httpClient = new CurlHTTPClient($channel_access_token);
 $bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
  
 $app = AppFactory::create();
-$app->setBasePath("/public");
+$app->setBasePath(basePath:"/public");
  
-$app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Hello World!");
+$app->get(pattern:'/', function (Request $request, Response $response, $args) {
+    $response->getBody()->write(string: "Hello World!");
     return $response;
 });
  
 // buat route untuk webhook
-$app->post('/webhook', function (Request $request, Response $response) use ($channel_secret, $bot, $httpClient, $pass_signature) {
+$app->post(pattern:'/webhook', function (Request $request, Response $response) use ($channel_secret, $bot, $httpClient, $pass_signature) {
     // get request body and line signature header
     $body = $request->getBody();
-    $signature = $request->getHeaderLine('HTTP_X_LINE_SIGNATURE');
+    $signature = $request->getHeaderLine(name: 'HTTP_X_LINE_SIGNATURE');
  
     // log body and signature
-    file_put_contents('php://stderr', 'Body: ' . $body);
+    file_put_contents(Filename:'php://stderr', data: 'Body: ' . $body);
  
     if ($pass_signature === false) {
         // is LINE_SIGNATURE exists in request header?
         if (empty($signature)) {
-            return $response->withStatus(400, 'Signature not set');
+            return $response->withStatus(code: 400, reasonPhrase: 'Signature not set');
         }
  
         // is this request comes from LINE?
         if (!SignatureValidator::validateSignature($body, $channel_secret, $signature)) {
-            return $response->withStatus(400, 'Invalid signature');
+            return $response->withStatus(code: 400, reasonPhrase: 'Invalid signature');
         }
     }
     
@@ -55,5 +55,4 @@ $app->post('/webhook', function (Request $request, Response $response) use ($cha
  
 });
 $app->run();
- 
  
